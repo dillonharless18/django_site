@@ -14,6 +14,6 @@ urlpatterns = [
     path("<int:question_id>/vote/", views.vote, name="vote"),
 
     # Created my own url and view to ensure I understand how dynamic urls work
-    # Will reverse the detail of the question and choise text
-    path("reverse/", views.reverse, name="reverse"),
+    # Mirrors the question list text
+    path("mirrored-questions/", views.mirrored_questions, name="mirrored-questions"),
 ]
