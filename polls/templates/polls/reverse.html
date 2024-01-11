@@ -1,0 +1,12 @@
+{% load custom_filters %}
+
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text|reverse_string }}</a></li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'polls:index' %}">esreveR</a>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
