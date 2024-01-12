@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+from django.db.models import Count
+
 
 from .models import Choice, Question
 
@@ -14,29 +16,46 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Question.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:5]
+
+        return Question.objects.filter(
+            pub_date__lte=timezone.now(),
+            choice__isnull=False,
+        ).distinct().order_by('-pub_date')[:5]
 
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = "polls/detail.html"
 
+    # def get_queryset(self):
+    #     """
+    #     Excludes any questions that aren't published yet or that have no choices.
+    #     """
+
     def get_queryset(self):
         """
         Excludes any questions that aren't published yet.
         """
-        return Question.objects.filter(pub_date__lte=timezone.now())
+        return Question.objects.filter(
+            pub_date__lte=timezone.now(), 
+            choice__isnull=False,).distinct()
 
 
 class ResultsView(generic.DetailView):
     model = Question
     template_name = "polls/results.html"
 
+    # def get_queryset(self):
+    #     """
+    #     Excludes any questions that aren't published yet or that have no choices.
+    #     """
     def get_queryset(self):
         """
         Excludes any questions that aren't published yet.
         """
-        return Question.objects.filter(pub_date__lte=timezone.now())
+        return Question.objects.filter(
+            pub_date__lte=timezone.now(), 
+            choice__isnull=False,).distinct()
 
 
 def vote(request, question_id):
